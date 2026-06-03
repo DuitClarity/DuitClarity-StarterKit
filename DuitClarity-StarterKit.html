@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuitClarity - Kunci Akses</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f7f5;
+        }
+        .bg-green-tile { background-color: #0d3b2b; }
+        .text-green-tile { color: #0d3b2b; }
+        .border-green-tile { border-color: #0d3b2b; }
+        .bg-green-light { background-color: #e8f0ec; }
+        .tab-active {
+            background-color: #e8f0ec;
+            color: #0d3b2b;
+            font-weight: 700;
+            border-bottom: 3px solid #0d3b2b;
+        }
+        /* Custom Scrollbar untuk Tabel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body id="body-render" class="bg-[#f4f7f5] min-h-screen flex items-center justify-center p-4 relative">
+
+    <!-- ================= TOAST NOTIFICATION (SISTEM BARU) ================= -->
+    <div id="toast-notification" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-semibold tracking-wide transition-all duration-300 opacity-0 -translate-y-10 z-[100] pointer-events-none flex items-center gap-2 border border-gray-700">
+        <span id="toast-icon">✨</span>
+        <span id="toast-msg">Notifikasi</span>
+    </div>
+
+    <!-- ================= GERBANG PASSWORD ================= -->
+    <div id="password-gateway" class="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-gray-100 text-center my-auto transition-all">
+        <img src="https://i.ibb.co.com/FTSq7CJ/SAVE-20260601-165444.png" alt="Logo DuitClarity" class="w-20 h-20 mx-auto mb-4 object-contain">
+        <h2 class="text-2xl font-extrabold text-[#0d3b2b]">Akses Terkunci</h2>
+        <p class="text-xs text-gray-500 mt-1 mb-6 leading-relaxed">Masukkan password resmi yang Anda dapatkan dari Lynk.id untuk membuka dashboard finansial.</p>
+        
+        <div class="space-y-4">
+            <div class="relative">
+                <input type="password" id="pass-input" placeholder="Ketik Password di Sini" class="w-full p-3.5 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d3b2b] text-center font-semibold tracking-widest text-sm shadow-sm transition">
+                <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition focus:outline-none">
+                    <svg id="eye-open-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    <svg id="eye-close-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                </button>
+            </div>
+            <button onclick="verifikasiAkses()" class="w-full bg-[#0d3b2b] hover:bg-emerald-900 text-white font-bold p-3.5 rounded-xl transition shadow-md text-sm tracking-wide">
+                Buka Dashboard
+            </button>
+            <p id="error-msg" class="text-xs text-red-600 font-semibold hidden animate-bounce">🚨 Password salah! Periksa kembali huruf besar/kecilnya.</p>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD UTAMA ================= -->
+    <div id="secure-dashboard" class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hidden">
+        
+        <!-- HEADER UTAMA -->
+        <header class="bg-green-tile p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
+            <!-- Hiasan Background Header -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+            
+            <div class="flex items-center gap-4 z-10">
+                <img src="https://i.ibb.co.com/FTSq7CJ/SAVE-20260601-165444.png" alt="DuitClarity Logo" class="w-12 h-12 object-contain rounded-xl bg-white p-1 shadow-md">
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">DuitClarity</h1>
+                    <p class="text-[11px] text-green-200/80">Sistem Finansial Realistis Terintegrasi v1.3</p>
+                </div>
+            </div>
+            <div class="text-right z-10">
+                <p id="current-date" class="text-xs font-medium text-green-100 bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-800"></p>
+            </div>
+        </header>
+
+        <!-- MENU NAVIGASI TABS -->
+        <nav class="bg-gray-50 border-b border-gray-200 flex flex-wrap text-xs md:text-sm">
+            <button onclick="switchTab('tracker-panel')" id="btn-tracker-panel" class="flex-1 py-3.5 px-4 text-center text-gray-500 font-medium transition hover:text-green-tile focus:outline-none tab-active">
+                📊 Budget Tracker
+            </button>
+            <button onclick="switchTab('emergency-panel')" id="btn-emergency-panel" class="flex-1 py-3.5 px-4 text-center text-gray-500 font-medium transition hover:text-green-tile focus:outline-none">
+                🛡️ Dana Darurat
+            </button>
+            <button onclick="switchTab('guide-panel')" id="btn-guide-panel" class="flex-1 py-3.5 px-4 text-center text-gray-500 font-medium transition hover:text-green-tile focus:outline-none">
+                📐 Alokasi Dana
+            </button>
+        </nav>
+
+        <!-- KONTEN PANELS -->
+        <div class="p-5 md:p-6 text-gray-800">
+            <!-- PANEL 1: BUDGET TRACKER -->
+            <div id="tracker-panel" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-green-light p-4 rounded-xl border border-green-200 shadow-sm transition hover:shadow-md">
+                        <p class="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Total Pendapatan</p>
+                        <h3 id="t1-income" class="text-xl font-bold text-green-700 mt-1">Rp 0</h3>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100 shadow-sm transition hover:shadow-md">
+                        <p class="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Total Pengeluaran</p>
+                        <h3 id="t1-expense" class="text-xl font-bold text-red-600 mt-1">Rp 0</h3>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 shadow-sm transition hover:shadow-md">
+                        <p class="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Sisa Saldo Netto</p>
+                        <h3 id="t1-balance" class="text-xl font-bold text-gray-800 mt-1">Rp 0</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <div class="lg:col-span-2 bg-gray-50 p-5 rounded-xl border border-gray-200/60 text-xs shadow-sm">
+                        <h3 class="text-sm font-bold text-green-tile mb-3 flex items-center gap-1.5">➕ Catat Arus Kas</h3>
+                        <form id="t1-form" class="space-y-3">
+                            <div>
+                                <label class="block font-semibold text-gray-600 mb-1">Jenis Arus Kas</label>
+                                <select id="t1-type" class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700/50 focus:border-green-700 focus:outline-none transition">
+                                    <option value="income">Pendapatan (Masuk)</option>
+                                    <option value="expense" selected>Pengeluaran (Keluar)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-600 mb-1">Nama/Keterangan</label>
+                                <input type="text" id="t1-desc" placeholder="Contoh: Gaji, Makan, Listrik" required class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700/50 focus:border-green-700 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-600 mb-1">Nominal (Rp)</label>
+                                <input type="number" id="t1-amount" placeholder="Nominal angka" required class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700/50 focus:border-green-700 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-600 mb-1">Kategori Realistis Indonesia</label>
+                                <select id="t1-category" class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700/50 focus:border-green-700 focus:outline-none transition">
+                                    <optgroup label="Pendapatan"><option value="Gaji / Utama">💼 Gaji / Utama</option><option value="Sampingan / Freelance">🚀 Sampingan / Freelance</option></optgroup>
+                                    <optgroup label="Pengeluaran"><option value="Makan & Sembako" selected>🍚 Makan & Sembako</option><option value="Kos / Kontrakan / Tagihan">🏠 Kos / Kontrakan / Tagihan</option><option value="Bensin & Transportasi">🛵 Bensin & Transportasi</option><option value="Paketan / Internet / Pulsa">⚡ Paketan / Internet / Pulsa</option><option value="Nongkrong / Jajan">☕ Nongkrong / Jajan</option><option value="Keluarga / Kondangan">🤝 Keluarga / Kondangan</option><option value="Cicilan / Utang">📉 Cicilan / Utang</option></optgroup>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-green-tile text-white font-bold p-3 rounded-lg hover:bg-emerald-900 transition shadow-md mt-2">Simpan Transaksi</button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-3 flex flex-col text-xs">
+                        <div class="border border-gray-200 rounded-xl overflow-hidden flex-1 bg-white max-h-[380px] overflow-y-auto shadow-sm relative">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 border-b border-gray-200 font-medium text-gray-600 sticky top-0 z-10 backdrop-blur-md bg-opacity-90">
+                                    <tr><th class="p-3">Keterangan / Kategori</th><th class="p-3 text-right">Jumlah</th><th class="p-3 text-center">Aksi</th></tr>
+                                </thead>
+                                <tbody id="t1-list" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                            <div id="t1-empty" class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-gray-400 bg-white">
+                                <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <p>Belum ada pencatatan kas harian.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: KALKULATOR DANA DARURAT -->
+            <div id="emergency-panel" class="tab-content space-y-6 hidden">
+                <div class="bg-gradient-to-br from-[#0d3b2b]/5 to-[#0d3b2b]/10 p-6 rounded-xl border border-green-tile/20 shadow-sm relative overflow-hidden">
+                    <h2 class="text-base font-bold text-green-tile mb-4 relative z-10">🛡️ Kalkulator Ketahanan Hidup (Emergency Fund)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center relative z-10">
+                        <div class="text-xs">
+                            <label class="block font-bold text-gray-700 uppercase mb-2">💰 Total Dana Darurat Milikmu Sekarang</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 font-semibold text-gray-500">Rp</span>
+                                <input type="number" id="t2-savings-input" value="0" class="w-full pl-10 p-3 bg-white border border-gray-300 rounded-lg font-bold text-gray-800 text-base focus:ring-2 focus:ring-green-700/50 focus:outline-none transition shadow-sm">
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-2 leading-relaxed">Masukkan kas cair, tabungan bank, atau emas instanmu.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm md:col-span-2 flex flex-col sm:flex-row items-center justify-around gap-6">
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wide">Kamu Aman Selama</p>
+                                <h4 id="t2-months" class="text-4xl font-extrabold text-green-tile my-2">0 Bulan</h4>
+                                <span id="t2-status" class="text-[11px] font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600 inline-block">Menganalisis...</span>
+                            </div>
+                            <div class="text-xs text-gray-500 border-t sm:border-t-0 sm:border-l border-gray-200 pt-4 sm:pt-0 sm:pl-8 space-y-2">
+                                <p class="font-bold text-gray-700 uppercase tracking-wide">Rasio Beban Bulanan:</p>
+                                <p class="text-sm">🔥 <span id="t2-expense-lbl" class="font-bold text-red-600">Rp 0</span></p>
+                                <p class="text-[10px] text-gray-400 italic bg-gray-50 p-1.5 rounded border border-gray-100 inline-block">(Auto-sync dari riwayat pengeluaran Tab 1)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: ALOKASI DANA -->
+            <div id="guide-panel" class="tab-content space-y-6 hidden">
+                <div class="bg-green-light p-5 rounded-xl border border-green-200 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+                    <div class="text-xs max-w-md">
+                        <h2 class="font-bold text-green-tile text-sm">📐 Skema Otomatis Alokasi Gaji Terukur</h2>
+                        <p class="text-gray-600 mt-1 leading-relaxed">Atur target batas pengeluaran bulanan berdasarkan nominal gaji pokokmu agar keuangan tidak bocor halus.</p>
+                    </div>
+                    <div class="relative w-full md:w-72 text-sm">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 font-semibold text-gray-500">Rp</span>
+                        <input type="number" id="t3-salary-input" value="5000000" class="w-full pl-10 p-3 bg-white border border-gray-300 rounded-lg font-bold text-gray-800 text-base focus:ring-2 focus:ring-green-700/50 focus:outline-none transition shadow-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-amber-300 transition">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-amber-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                        <span class="font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded text-[10px] uppercase tracking-wide">50% Kebutuhan (Needs)</span>
+                        <h4 id="t3-needs-val" class="text-2xl font-extrabold text-gray-800 mt-3">Rp 0</h4>
+                        <p class="text-gray-500 mt-2 leading-relaxed">Sembako, kosan, tagihan rutin, & transportasi.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-rose-300 transition">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-rose-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                        <span class="font-bold text-rose-800 bg-rose-100 px-2.5 py-1 rounded text-[10px] uppercase tracking-wide">30% Keinginan (Wants)</span>
+                        <h4 id="t3-wants-val" class="text-2xl font-extrabold text-gray-800 mt-3">Rp 0</h4>
+                        <p class="text-gray-500 mt-2 leading-relaxed">Jajan kopi, nongkrong, film, & langganan digital.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                        <span class="font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded text-[10px] uppercase tracking-wide">20% Masa Depan (Save)</span>
+                        <h4 id="t3-savings-val" class="text-2xl font-extrabold text-emerald-700 mt-3">Rp 0</h4>
+                        <p class="text-gray-500 mt-2 leading-relaxed">Investasi, tabungan emas, atau pelunasan utang.</p>
+                    </div>
+                </div>
+
+                <div id="t3-insight" class="p-4 rounded-xl border text-xs font-medium shadow-sm"></div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="bg-gray-50 p-4 text-center text-xs text-gray-400 border-t border-gray-100">
+            &copy; 2026 DuitClarity. Sistem Keuangan Indonesia Realistis & Terukur.
+        </footer>
+    </div>
+
+
+    <!-- ================= FLOATING POP-UP WIDGET (IMPROVED) ================= -->
+    <div id="feedback-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 font-sans hidden">
+        
+        <!-- Jendela Konten Pop-up Menu Pilihan -->
+        <div id="popup-box" class="w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 hidden transform transition-all scale-95 opacity-0 origin-bottom-right">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-3">
+                <h4 class="text-xs font-extrabold text-[#0d3b2b] uppercase tracking-wider flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Hubungi Kami
+                </h4>
+                <button onclick="toggleFeedbackPopup()" class="text-gray-400 hover:text-red-500 bg-gray-50 hover:bg-red-50 rounded-full p-1.5 transition focus:outline-none">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="space-y-2 text-xs">
+                <!-- Opsi 1: Kritik & Saran -->
+                <button onclick="sendEmailToClarity('saran')" class="w-full text-left bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-300 p-3 rounded-xl flex items-center gap-3 font-bold text-gray-700 hover:text-[#0d3b2b] transition shadow-sm">
+                    <span class="text-base">💡</span> <span>Kritik atau Saran</span>
+                </button>
+                <!-- Opsi 2: Testimoni -->
+                <button onclick="sendEmailToClarity('testi')" class="w-full text-left bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-300 p-3 rounded-xl flex items-center gap-3 font-bold text-gray-700 hover:text-[#0d3b2b] transition shadow-sm">
+                    <span class="text-base">⭐</span> <span>Kirim Testimoni</span>
+                </button>
+                
+                <div class="pt-2 mt-2 border-t border-gray-100">
+                    <p class="text-[10px] text-gray-400 text-center mb-1.5">Aplikasi email tidak terbuka?</p>
+                    <!-- Opsi 3: Fallback Copy Email -->
+                    <button onclick="copyEmailToClipboard()" class="w-full text-center bg-gray-800 hover:bg-black text-white p-2.5 rounded-lg font-medium transition flex justify-center items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Salin Alamat Email
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Utama Melayang (FAB) -->
+        <button onclick="toggleFeedbackPopup()" class="bg-[#0d3b2b] hover:bg-emerald-950 text-white rounded-full p-4 shadow-[0_8px_30px_rgb(13,59,43,0.4)] transition-all duration-300 hover:scale-110 flex items-center justify-center group focus:outline-none border-2 border-emerald-800/50">
+            <svg class="w-6 h-6 transform group-hover:-rotate-12 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </button>
+    </div>
+
+
+    <!-- ================= SISTEM JAVASCRIPT UTAMA ================= -->
+    <script>
+        // ================= PENGATURAN PASSWORD MASUK =================
+        const PASSWORD_RAHASIA = "ClarityStarterKit26"; 
+
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('pass-input');
+            const eyeOpen = document.getElementById('eye-open-icon');
+            const eyeClose = document.getElementById('eye-close-icon');
+
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeOpen.classList.remove('hidden');
+                eyeClose.classList.add('hidden');
+            } else {
+                passInput.type = 'password';
+                eyeOpen.classList.add('hidden');
+                eyeClose.classList.remove('hidden');
+            }
+        }
+
+        function verifikasiAkses() {
+            const inputPass = document.getElementById('pass-input').value;
+            if (inputPass === PASSWORD_RAHASIA) {
+                document.getElementById('password-gateway').remove();
+                document.getElementById('secure-dashboard').classList.remove('hidden');
+                document.getElementById('feedback-widget').classList.remove('hidden');
+                document.getElementById('body-render').className = "p-2 md:p-6 bg-[#f4f7f5] block min-h-screen relative";
+                initMasterEngine();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('pass-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') verifikasiAkses();
+        });
+
+
+        // ================= SISTEM TOAST NOTIFICATION =================
+        function showToastMessage(msg, icon = "✅") {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = icon;
+            
+            toast.classList.remove('opacity-0', '-translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-10');
+            }, 3500);
+        }
+
+
+        // ================= INTERAKSI POP-UP WIDGET KANAN (IMPROVED) =================
+        function toggleFeedbackPopup() {
+            const box = document.getElementById('popup-box');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                setTimeout(() => {
+                    box.classList.remove('scale-95', 'opacity-0');
+                    box.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            } else {
+                box.classList.remove('scale-100', 'opacity-100');
+                box.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => box.classList.add('hidden'), 200);
+            }
+        }
+
+        function sendEmailToClarity(tipe) {
+            const emailTujuan = "duitclarity@gmail.com";
+            let subjek = "";
+            let isiTemplate = "";
+
+            if (tipe === 'saran') {
+                subjek = encodeURIComponent("Kritik & Saran Pengguna - DuitClarity");
+                isiTemplate = encodeURIComponent("Halo Tim DuitClarity,\n\nBerikut kritik/saran saya untuk pengembangan dashboard:\n- ");
+            } else if (tipe === 'testi') {
+                subjek = encodeURIComponent("Testimoni Pengguna - DuitClarity");
+                isiTemplate = encodeURIComponent("Halo Tim DuitClarity,\n\nBerikut review/testi setelah saya mencoba menggunakan dashboard ini:\n- ");
+            }
+
+            const mailtoLink = `mailto:${emailTujuan}?subject=${subjek}&body=${isiTemplate}`;
+
+            // Menggunakan teknik pembuatan anchor dinamis (Lebih kuat menembus blokir browser/adblock)
+            const a = document.createElement('a');
+            a.href = mailtoLink;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            toggleFeedbackPopup();
+            showToastMessage("Membuka aplikasi Email Anda...", "✉️");
+        }
+
+        // Fitur Fallback Copy Email
+        function copyEmailToClipboard() {
+            const email = "duitclarity@gmail.com";
+            navigator.clipboard.writeText(email).then(() => {
+                showToastMessage("Email disalin: " + email, "📋");
+                toggleFeedbackPopup();
+            }).catch(err => {
+                showToastMessage("Gagal menyalin email. Blokir browser aktif.", "❌");
+            });
+        }
+
+
+        // ================= ENGINE SISTEM FINANSIAL DUITCLARITY =================
+        let coreTransactions, coreSavings, coreSalary;
+
+        function initMasterEngine() {
+            try {
+                coreTransactions = JSON.parse(localStorage.getItem('dc_core_txs')) || [];
+            } catch (e) {
+                coreTransactions = [];
+            }
+            coreSavings = localStorage.getItem('dc_core_savings') || 0;
+            coreSalary = localStorage.getItem('dc_core_salary') || 5000000;
+
+            document.getElementById('t2-savings-input').value = coreSavings;
+            document.getElementById('t3-salary-input').value = coreSalary;
+
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', dateOptions);
+
+            document.getElementById('t2-savings-input').addEventListener('input', renderMasterEngine);
+            document.getElementById('t3-salary-input').addEventListener('input', renderMasterEngine);
+            
+            renderMasterEngine();
+        }
+
+        function formatIDR(num) {
+            return 'Rp ' + Number(num).toLocaleString('id-ID');
+        }
+
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('tab-active'));
+
+            document.getElementById(targetId).classList.remove('hidden');
+            document.getElementById(`btn-${targetId}`).classList.add('tab-active');
+            
+            renderMasterEngine();
+        }
+
+        function renderMasterEngine() {
+            coreSavings = parseInt(document.getElementById('t2-savings-input').value) || 0;
+            coreSalary = parseInt(document.getElementById('t3-salary-input').value) || 0;
+
+            localStorage.setItem('dc_core_savings', coreSavings);
+            localStorage.setItem('dc_core_salary', coreSalary);
+            localStorage.setItem('dc_core_txs', JSON.stringify(coreTransactions));
+
+            let incomeTotal = 0;
+            let expenseTotal = 0;
+
+            const t1List = document.getElementById('t1-list');
+            t1List.innerHTML = '';
+
+            if (coreTransactions.length === 0) {
+                document.getElementById('t1-empty').classList.remove('hidden');
+            } else {
+                document.getElementById('t1-empty').classList.add('hidden');
+            }
+
+            coreTransactions.forEach((tx, idx) => {
+                const isInc = tx.type === 'income';
+                if (isInc) incomeTotal += tx.amount;
+                else expenseTotal += tx.amount;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition text-xs border-b border-gray-100';
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <p class="font-bold text-gray-800">${tx.description}</p>
+                        <span class="text-[10px] text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded flex w-max items-center gap-1 mt-1">${tx.category}</span>
+                    </td>
+                    <td class="p-3 text-right font-bold ${isInc ? 'text-green-700' : 'text-red-600'}">
+                        ${isInc ? '+' : '-'} ${formatIDR(tx.amount)}
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="removeCoreTx(${idx})" class="text-gray-400 hover:text-white font-medium transition p-1.5 rounded-lg hover:bg-red-500" title="Hapus Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                `;
+                t1List.appendChild(tr);
+            });
+
+            // Update Panel 1
+            document.getElementById('t1-income').innerText = formatIDR(incomeTotal);
+            document.getElementById('t1-expense').innerText = formatIDR(expenseTotal);
+            const netBalance = incomeTotal - expenseTotal;
+            document.getElementById('t1-balance').innerText = formatIDR(netBalance);
+            document.getElementById('t1-balance').className = netBalance < 0 ? 'text-xl font-bold text-red-600 mt-1' : 'text-xl font-bold text-gray-800 mt-1';
+
+            // Update Panel 2
+            document.getElementById('t2-expense-lbl').innerText = formatIDR(expenseTotal);
+            if (expenseTotal <= 0) {
+                document.getElementById('t2-months').innerText = "0 Bulan";
+                document.getElementById('t2-status').innerText = "Belum Ada Pengeluaran 📝";
+                document.getElementById('t2-status').className = "text-[11px] font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600 inline-block";
+            } else {
+                const monthsSafe = (coreSavings / expenseTotal).toFixed(1);
+                document.getElementById('t2-months').innerText = `${monthsSafe} Bulan`;
+                const statusEl = document.getElementById('t2-status');
+                if (monthsSafe < 3) {
+                    statusEl.innerText = "🚨 Sangat Rawan (Di bawah 3 bulan)";
+                    statusEl.className = "text-[11px] font-bold px-3 py-1 rounded-full bg-red-100 text-red-800 inline-block border border-red-200";
+                } else if (monthsSafe >= 3 && monthsSafe < 6) {
+                    statusEl.innerText = "👍 Aman untuk Single (3-6 bulan)";
+                    statusEl.className = "text-[11px] font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800 inline-block border border-amber-200";
+                } else {
+                    statusEl.innerText = "🛡️ Sangat Aman & Ideal (> 6 bulan)";
+                    statusEl.className = "text-[11px] font-bold px-3 py-1 rounded-full bg-green-200 text-green-800 inline-block border border-green-300";
+                }
+            }
+
+            // Update Panel 3
+            document.getElementById('t3-needs-val').innerText = formatIDR(coreSalary * 0.5);
+            document.getElementById('t3-wants-val').innerText = formatIDR(coreSalary * 0.3);
+            document.getElementById('t3-savings-val').innerText = formatIDR(coreSalary * 0.2);
+
+            const insightEl = document.getElementById('t3-insight');
+            if (coreSalary >= 3000000 && coreSalary < 5000000) {
+                insightEl.innerHTML = "💡 <b>Analisis DuitClarity (Gaji 3-5 Juta):</b> Menjaga kebutuhan pokok (50%) adalah prioritas. Tekan keinginan (jajan) sekecil mungkin agar uang bisa dialokasikan untuk ketahanan dana darurat.";
+                insightEl.className = "p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-900 text-xs leading-relaxed";
+            } else if (coreSalary >= 5000000 && coreSalary <= 7500000) {
+                insightEl.innerHTML = "💡 <b>Analisis DuitClarity (Gaji 5-7.5 Juta):</b> Alokasi standar berjalan ideal. Amankan jatah pilar masa depan (20%) langsung di awal bulan demi memotong sifat impulsif berbelanja.";
+                insightEl.className = "p-4 rounded-xl border border-green-200 bg-green-50 text-green-900 text-xs leading-relaxed";
+            } else if (coreSalary > 7500000) {
+                insightEl.innerHTML = "💡 <b>Analisis DuitClarity (Gaji > 7.5 Juta):</b> Sangat disarankan menerapkan <i>'Lifestyle Lock'</i>. Kunci pengeluaran gaya hidup, lalu tingkatkan pilar tabungan masa depan hingga menyentuh 35%+.";
+                insightEl.className = "p-4 rounded-xl border border-blue-200 bg-blue-50 text-blue-900 text-xs leading-relaxed";
+            } else {
+                insightEl.innerHTML = "💡 Masukkan kisaran skala gaji nominal Rp 3 Juta ke atas untuk memunculkan tinjauan keuangan strategis.";
+                insightEl.className = "p-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 text-xs text-center";
+            }
+        }
+
+        document.getElementById('t1-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amountInput = document.getElementById('t1-amount');
+            const descInput = document.getElementById('t1-desc');
+            
+            const newTx = {
+                type: document.getElementById('t1-type').value,
+                description: descInput.value.trim(),
+                amount: parseInt(amountInput.value) || 0,
+                category: document.getElementById('t1-category').value
+            };
+            
+            if (newTx.amount <= 0 || newTx.description === "") return;
+
+            coreTransactions.unshift(newTx); // Insert di atas
+            renderMasterEngine();
+            showToastMessage("Transaksi berhasil dicatat!", "💰");
+            
+            descInput.value = '';
+            amountInput.value = '';
+        });
+
+        function removeCoreTx(index) {
+            coreTransactions.splice(index, 1);
+            renderMasterEngine();
+            showToastMessage("Data kas dihapus.", "🗑️");
+        }
+    </script>
+</body>
+</html>
